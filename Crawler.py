@@ -16,36 +16,51 @@ class Crawler:
         self.crawlArea = crawlArea
 
     def getPageLimit(self):
-        try:
-            url = 'http://bj.lianjia.com/ershoufang/' + self.crawlArea
-            request = urllib2.Request(url, headers = self.headers)
-            response = urllib2.urlopen(request)
-            pageCode = response.read()
-            # print pageCode
-            # Get limit from pageCode
-            pattern = re.compile('totalPage":(.*?),')
-            item = re.findall(pattern, pageCode)
-            print "Page limit is " + str(item[0])
-            return int(item[0])
+        url = 'http://bj.lianjia.com/ershoufang/' + self.crawlArea
+        session = requesocks.session()
+        session.proxies = {'http': 'socks5://127.0.0.1:9050', 'https': 'socks5://127.0.0.1:9050'}
+        response = session.get(url)
+        pageCode = response.read()
+        pattern = re.compile('totalPage":(.*?),')
+        item = re.findall(pattern, pageCode)
+        print "Page limit is " + str(item[0])
+        return int(item[0])
+        # try:
+        #     url = 'http://bj.lianjia.com/ershoufang/' + self.crawlArea
+        #     request = urllib2.Request(url, headers = self.headers)
+        #     response = urllib2.urlopen(request)
+        #     pageCode = response.read()
+        #     # print pageCode
+        #     # Get limit from pageCode
+        #     pattern = re.compile('totalPage":(.*?),')
+        #     item = re.findall(pattern, pageCode)
+        #     print "Page limit is " + str(item[0])
+        #     return int(item[0])
 
-        except urllib2.URLError, e:
-            if hasattr(e,"reason"):
-                print "Get page limit failed...",e.reason
-                return 0
+        # except urllib2.URLError, e:
+        #     if hasattr(e,"reason"):
+        #         print "Get page limit failed...",e.reason
+        #         return 0
 
     def getPageCode(self, url):
-        try:
-            request = urllib2.Request(url, headers = self.headers)
-            response = urllib2.urlopen(request)
-            pageCode = response.read()
-            print "Geting page code of " + url + " ..."
-            return pageCode
+        session = requesocks.session()
+        session.proxies = {'http': 'socks5://127.0.0.1:9050', 'https': 'socks5://127.0.0.1:9050'}
+        response = session.get(url)
+        pageCode = response.read()
+        print "Geting page code of " + url + " ..."
+        return pageCode
+        # try:
+        #     request = urllib2.Request(url, headers = self.headers)
+        #     response = urllib2.urlopen(request)
+        #     pageCode = response.read()
+        #     print "Geting page code of " + url + " ..."
+        #     return pageCode
  
-        except urllib2.URLError, e:
-            if hasattr(e,"reason"):
-                print "Connection failed...",e.reason
-                quit()
-                return None
+        # except urllib2.URLError, e:
+        #     if hasattr(e,"reason"):
+        #         print "Connection failed...",e.reason
+        #         quit()
+        #         return None
  	
  	# Extract links in one page and add it to memory
  	# If no more link, return false
