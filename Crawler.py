@@ -1,4 +1,7 @@
 # -*- coding:utf-8 -*-
+import socks
+import socket
+import threading
 import urllib
 import urllib2
 import re
@@ -9,7 +12,7 @@ import os
 
 class Crawler:
     def __init__(self, crawlArea = 'dongcheng'):
-        self.pageIndex = 35
+        self.pageIndex = 1
         self.user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3)'
         self.headers = { 'User-Agent' : self.user_agent }
         self.links = []
@@ -25,7 +28,6 @@ class Crawler:
             # Get limit from pageCode
             pattern = re.compile('totalPage":(.*?),')
             item = re.findall(pattern, pageCode)
-            print "Page limit is " + str(item[0])
             return int(item[0])
 
         except urllib2.URLError, e:
@@ -86,10 +88,15 @@ class Crawler:
 
     def start(self):
         print "Start Crawling..."
+#        proxy = urllib2.ProxyHandler({'http': '127.0.0.1:9050'})
+#        opener = urllib2.build_opener(proxy)
+#        urllib2.install_opener(opener)
+#        socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9050)
+#        socket.socket = socks.socksocket
+#        t = threading.Timer(60, self.reloadTor)
+#        t.start()
         pageLimit = self.getPageLimit()
-        proxy_handler = urllib2.ProxyHandler({"http" : '127.0.0.1:9050'})
-        opener = urllib2.build_opener(proxy_handler)
-        urllib2.install_opener(opener)
+        print('Page limit is ' + str(pageLimit))
         # Load all pages
         while(self.pageIndex <= pageLimit):
         	print "Loading page " + str(self.pageIndex) + "..."
@@ -97,6 +104,10 @@ class Crawler:
         	pageCode = self.getPageCode(url)
         	self.addLinks(pageCode)
         	self.pageIndex = self.pageIndex + 1
+                time.sleep(2)
+        list_file = open(os.getcwd() + '/' + str(self.crawlArea) +'_list.csv', 'w')
+        for item in self.links:
+            list_file.write("%s\n" % item)
         # Crawling pages
         with open(os.getcwd() + '/' + str(self.crawlArea) +'.csv', 'a') as f:
             writer = csv.writer(f)
