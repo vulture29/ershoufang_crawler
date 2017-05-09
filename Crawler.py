@@ -25,7 +25,7 @@ class Crawler:
             # Get limit from pageCode
             pattern = re.compile('totalPage":(.*?),')
             item = re.findall(pattern, pageCode)
-            print "Page limit is " + str(item)
+            print "Page limit is " + str(item[0])
             return int(item[0])
 
         except urllib2.URLError, e:
@@ -87,6 +87,9 @@ class Crawler:
     def start(self):
         print "Start Crawling..."
         pageLimit = self.getPageLimit()
+        proxy_handler = urllib2.ProxyHandler({"http" : '127.0.0.1:9050'})
+        opener = urllib2.build_opener(proxy_handler)
+        urllib2.install_opener(opener)
         # Load all pages
         while(self.pageIndex <= pageLimit):
         	print "Loading page " + str(self.pageIndex) + "..."
@@ -95,7 +98,7 @@ class Crawler:
         	self.addLinks(pageCode)
         	self.pageIndex = self.pageIndex + 1
         # Crawling pages
-        with open(os.getcwd() + str(self.crawlArea) +'.csv', 'a') as f:
+        with open(os.getcwd() + '/' + str(self.crawlArea) +'.csv', 'a') as f:
             writer = csv.writer(f)
             index = ['价格','均价','小区名称','所在区域']
             writer.writerow(index)
