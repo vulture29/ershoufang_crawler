@@ -57,24 +57,19 @@ class Crawler:
 		self.links.extend(items)
 
     def crawlPage(self, pageCode):
-        print "Crawl page..."
-
-        def getReItem(pattern, pageCode):
+        def getReItem(pattern, itemPageCode):
             re_pattern = re.compile(pattern)
-            items = re.findall(re_pattern, pageCode)
+            items = re.findall(re_pattern, itemPageCode)
             if len(items) <= 0:
                 print "CANNOT crawl this page."
                 quit()
             return items[0]
 
-        with open('test.htm', 'r') as myfile:
-                pageCode = myfile.read()
-        print "Crawl page..."
-
+        print "Crawling page..."
         ret = []
         # 标题
         pattern = '<h1 class="main" title="(.*?)">'
-        item = getReItem(pattern)
+        item = getReItem(pattern, pageCode)
         title = str(item)
         ret.append(title)
 
@@ -185,8 +180,8 @@ class Crawler:
                 reader = csv.reader(f)
                 links_list = list(reader)
 
-            for link in links_list:
-                pageCode = self.getPageCode(link)
-                row = self.crawlPage(pageCode)
-                writer.writerow(row)
+                for link in links_list:
+                    pageCode = self.getPageCode(link[0])
+                    row = self.crawlPage(pageCode)
+                    writer.writerow(row)
 
