@@ -105,12 +105,12 @@ class Crawler:
         for item in self.links:
             list_file.write("%s\n" % item)
         # Crawling pages
-        with open(os.getcwd() + '/' + str(self.crawlArea) +'.csv', 'a') as f:
-            writer = csv.writer(f)
-            index = ['价格','均价','小区名称','所在区域']
-            writer.writerow(index)
-            for link in self.links:
-                pageCode = self.getPageCode(link)
-                row = self.crawlPage(pageCode)
-                writer.writerow(row)
+#         with open(os.getcwd() + '/' + str(self.crawlArea) +'.csv', 'a') as f:
+#             writer = csv.writer(f)
+#             index = ['价格','均价','小区名称','所在区域']
+#             writer.writerow(index)
+#             for link in self.links:
+#                 pageCode = self.getPageCode(link)
+#                 row = self.crawlPage(pageCode)
+#                 writer.writerow(row)
 
