@@ -1,7 +1,4 @@
 # -*- coding:utf-8 -*-
-import socks
-import socket
-import threading
 import urllib
 import urllib2
 import re
@@ -104,7 +101,6 @@ class Crawler:
         	pageCode = self.getPageCode(url)
         	self.addLinks(pageCode)
         	self.pageIndex = self.pageIndex + 1
-                time.sleep(2)
         list_file = open(os.getcwd() + '/' + str(self.crawlArea) +'_list.csv', 'w')
         for item in self.links:
             list_file.write("%s\n" % item)
