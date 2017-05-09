@@ -51,6 +51,9 @@ class Crawler:
     def addLinks(self, pageCode):
  		pattern = re.compile('<li class="clear"><a class="img " href="(.*?)" target')
 		items = re.findall(pattern, pageCode)
+		if(len(items) <= 0):
+			print("No links!")
+			quit()
 		self.links.extend(items)
 
     def crawlPage(self, pageCode):
